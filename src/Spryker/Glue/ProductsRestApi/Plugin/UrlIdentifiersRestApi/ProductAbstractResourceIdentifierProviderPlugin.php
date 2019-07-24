@@ -19,7 +19,7 @@ class ProductAbstractResourceIdentifierProviderPlugin extends AbstractPlugin imp
 {
     /**
      * {@inheritdoc}
-     * - Returns true if the `fkResourceProductAbstract` is set on the UrlStorageTransfer given as a parameter.
+     * - Returns true if the UrlStorageTransfer::fkResourceProductAbstract is not null.
      *
      * @api
      *
