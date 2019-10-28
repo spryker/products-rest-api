@@ -34,13 +34,13 @@ class ProductsRestApiToProductResourceAliasStorageClientBridge implements Produc
     }
 
     /**
-     * @param string $sku
+     * @param string[] $skus
      * @param string $localeName
      *
-     * @return array|null
+     * @return array
      */
-    public function findProductConcreteStorageDataBySku(string $sku, string $localeName): ?array
+    public function getBulkProductAbstractStorageData(array $skus, string $localeName): array
     {
-        return $this->productResourceAliasStorageClient->getProductConcreteStorageDataBySku($sku, $localeName);
+        return $this->productResourceAliasStorageClient->getBulkProductAbstractStorageData($skus, $localeName);
     }
 }

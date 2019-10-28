@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AbstractProductsReader implements AbstractProductsReaderInterface
 {
     protected const PRODUCT_CONCRETE_IDS_KEY = 'product_concrete_ids';
+    protected const KEY_SKU = 'sku';
 
     /**
      * @var \Spryker\Glue\ProductsRestApi\Dependency\Client\ProductsRestApiToProductResourceAliasStorageClientInterface
@@ -120,6 +121,27 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
     }
 
     /**
+     * @param string[] $skus
+     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
+     *
+     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface[]
+     */
+    public function getBulkProductAbstractBySkus(array $skus, RestRequestInterface $restRequest): array
+    {
+        $abstractProductData = $this->productResourceAliasStorageClient
+            ->getBulkProductAbstractStorageData(
+                $skus,
+                $restRequest->getMetadata()->getLocale()
+            );
+
+        if (!$abstractProductData) {
+            return [];
+        }
+
+        return $this->createRestResourcesFromBulkAbstractProductStorageData($abstractProductData, $restRequest);
+    }
+
+    /**
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface $restResource
      * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
      *
@@ -140,5 +162,26 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         }
 
         return $restResource;
+    }
+
+    /**
+     * @param array $abstractProductData
+     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
+     *
+     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface[]
+     */
+    protected function createRestResourcesFromBulkAbstractProductStorageData(array $abstractProductData, RestRequestInterface $restRequest): array
+    {
+        $restResources = [];
+
+        foreach ($abstractProductData as $abstractProductDataItem) {
+            $abstractProductRestResource = $this->abstractProductsResourceMapper
+                    ->mapAbstractProductsResponseAttributesTransferToRestResponse($abstractProductData);
+
+            $restResources[$abstractProductDataItem[static::KEY_SKU]] =
+                $this->addConcreteProducts($abstractProductRestResource, $restRequest);
+        }
+
+        return $restResources;
     }
 }

@@ -18,6 +18,14 @@ interface ProductsRestApiToProductResourceAliasStorageClientInterface
     public function findProductAbstractStorageDataBySku(string $sku, string $localeName): ?array;
 
     /**
+     * @param string[] $skus
+     * @param string $localeName
+     *
+     * @return array
+     */
+    public function getBulkProductAbstractStorageData(array $skus, string $localeName): array;
+
+    /**
      * @param string $sku
      * @param string $localeName
      *
