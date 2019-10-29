@@ -27,7 +27,7 @@ interface ProductsRestApiResourceInterface
 
     /**
      * Specification:
-     *  - Retrieves multiple abstract product resource by sku.
+     *  - Retrieves multiple abstract product resources by sku.
      *
      * @api
      *

@@ -142,6 +142,27 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
     }
 
     /**
+     * @param array $abstractProductData
+     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
+     *
+     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface[]
+     */
+    protected function createRestResourcesFromBulkAbstractProductStorageData(array $abstractProductData, RestRequestInterface $restRequest): array
+    {
+        $restResources = [];
+
+        foreach ($abstractProductData as $abstractProductDataItem) {
+            $abstractProductRestResource = $this->abstractProductsResourceMapper
+                ->mapAbstractProductsResponseAttributesTransferToRestResponse($abstractProductData);
+
+            $restResources[$abstractProductDataItem[static::KEY_SKU]] =
+                $this->addConcreteProducts($abstractProductRestResource, $restRequest);
+        }
+
+        return $restResources;
+    }
+
+    /**
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface $restResource
      * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
      *
@@ -162,26 +183,5 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         }
 
         return $restResource;
-    }
-
-    /**
-     * @param array $abstractProductData
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface[]
-     */
-    protected function createRestResourcesFromBulkAbstractProductStorageData(array $abstractProductData, RestRequestInterface $restRequest): array
-    {
-        $restResources = [];
-
-        foreach ($abstractProductData as $abstractProductDataItem) {
-            $abstractProductRestResource = $this->abstractProductsResourceMapper
-                    ->mapAbstractProductsResponseAttributesTransferToRestResponse($abstractProductData);
-
-            $restResources[$abstractProductDataItem[static::KEY_SKU]] =
-                $this->addConcreteProducts($abstractProductRestResource, $restRequest);
-        }
-
-        return $restResources;
     }
 }
