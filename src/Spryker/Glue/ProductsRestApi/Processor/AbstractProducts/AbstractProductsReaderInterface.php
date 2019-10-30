@@ -26,7 +26,7 @@ interface AbstractProductsReaderInterface
      *
      * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface[]
      */
-    public function getBulkProductAbstractBySkus(array $skus, RestRequestInterface $restRequest): array;
+    public function getProductAbstractsBySkus(array $skus, RestRequestInterface $restRequest): array;
 
     /**
      * @param string $sku
