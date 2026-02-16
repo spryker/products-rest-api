@@ -22,6 +22,7 @@ class ConcreteProductsByQuoteRequestResourceRelationshipExpander extends Abstrac
         /** @var \Generated\Shared\Transfer\RestQuoteRequestsAttributesTransfer $restQuoteRequestsAttributesTransfer */
         $restQuoteRequestsAttributesTransfer = $restResource->getAttributes();
         $productConcreteSkus = [];
+        /** @phpstan-ignore instanceof.alwaysTrue */
         if (!($restQuoteRequestsAttributesTransfer instanceof RestQuoteRequestsAttributesTransfer) || !$restQuoteRequestsAttributesTransfer->getShownVersion()) {
             return [];
         }

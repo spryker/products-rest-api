@@ -6,3 +6,4 @@ parameters:
         - '#Method .+ConcreteProductsReader::findProductConcreteById\(\) should return .+RestResourceInterface\|null but returns .+RestResourceInterface\|false#'
         -
             identifier: missingType.iterableValue
+        - '#PHPDoc tag @Glue has invalid value#'
