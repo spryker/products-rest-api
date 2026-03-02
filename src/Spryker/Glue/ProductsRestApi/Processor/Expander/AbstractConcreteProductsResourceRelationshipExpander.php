@@ -18,9 +18,6 @@ abstract class AbstractConcreteProductsResourceRelationshipExpander implements C
      */
     protected $concreteProductsReader;
 
-    /**
-     * @param \Spryker\Glue\ProductsRestApi\Processor\ConcreteProducts\ConcreteProductsReaderInterface $concreteProductsReader
-     */
     public function __construct(ConcreteProductsReaderInterface $concreteProductsReader)
     {
         $this->concreteProductsReader = $concreteProductsReader;

@@ -22,20 +22,11 @@ class AbstractProductAttributeTranslationExpander implements AbstractProductAttr
      */
     protected $glossaryStorageClient;
 
-    /**
-     * @param \Spryker\Glue\ProductsRestApi\Dependency\Client\ProductsRestApiToGlossaryStorageClientInterface $glossaryStorageClient
-     */
     public function __construct(ProductsRestApiToGlossaryStorageClientInterface $glossaryStorageClient)
     {
         $this->glossaryStorageClient = $glossaryStorageClient;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer $abstractProductsRestAttributesTransfer
-     * @param string $localeName
-     *
-     * @return \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer
-     */
     public function addProductAttributeTranslation(
         AbstractProductsRestAttributesTransfer $abstractProductsRestAttributesTransfer,
         string $localeName

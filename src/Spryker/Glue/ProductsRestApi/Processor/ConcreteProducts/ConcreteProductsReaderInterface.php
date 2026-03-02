@@ -13,11 +13,6 @@ use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 
 interface ConcreteProductsReaderInterface
 {
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
     public function getProductConcreteStorageData(RestRequestInterface $restRequest): RestResponseInterface;
 
     /**
@@ -28,20 +23,8 @@ interface ConcreteProductsReaderInterface
      */
     public function getProductConcretesBySkus(array $productConcreteSkus, RestRequestInterface $restRequest): array;
 
-    /**
-     * @param string $sku
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface|null
-     */
     public function findProductConcreteBySku(string $sku, RestRequestInterface $restRequest): ?RestResourceInterface;
 
-    /**
-     * @param int $idProductConcrete
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface|null
-     */
     public function findProductConcreteById(int $idProductConcrete, RestRequestInterface $restRequest): ?RestResourceInterface;
 
     /**

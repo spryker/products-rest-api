@@ -11,11 +11,6 @@ use Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer;
 
 class ConcreteProductsResourceMapper implements ConcreteProductsResourceMapperInterface
 {
-    /**
-     * @param array $concreteProductData
-     *
-     * @return \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer
-     */
     public function mapConcreteProductsDataToConcreteProductsRestAttributes(array $concreteProductData): ConcreteProductsRestAttributesTransfer
     {
         return (new ConcreteProductsRestAttributesTransfer())->fromArray($concreteProductData, true);

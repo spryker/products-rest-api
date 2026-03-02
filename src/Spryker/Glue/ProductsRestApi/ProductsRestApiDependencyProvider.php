@@ -43,11 +43,6 @@ class ProductsRestApiDependencyProvider extends AbstractBundleDependencyProvider
      */
     public const PLUGINS_ABSTRACT_PRODUCTS_RESOURCE_EXPANDER = 'PLUGINS_ABSTRACT_PRODUCTS_RESOURCE_EXPANDER';
 
-    /**
-     * @param \Spryker\Glue\Kernel\Container $container
-     *
-     * @return \Spryker\Glue\Kernel\Container
-     */
     public function provideDependencies(Container $container): Container
     {
         $container = parent::provideDependencies($container);
@@ -61,11 +56,6 @@ class ProductsRestApiDependencyProvider extends AbstractBundleDependencyProvider
         return $container;
     }
 
-    /**
-     * @param \Spryker\Glue\Kernel\Container $container
-     *
-     * @return \Spryker\Glue\Kernel\Container
-     */
     protected function addProductStorageClient(Container $container): Container
     {
         $container->set(static::CLIENT_PRODUCT_STORAGE, function (Container $container) {
@@ -75,11 +65,6 @@ class ProductsRestApiDependencyProvider extends AbstractBundleDependencyProvider
         return $container;
     }
 
-    /**
-     * @param \Spryker\Glue\Kernel\Container $container
-     *
-     * @return \Spryker\Glue\Kernel\Container
-     */
     protected function addGlossaryStorageClient(Container $container): Container
     {
         $container->set(static::CLIENT_GLOSSARY_STORAGE, function (Container $container) {
@@ -89,11 +74,6 @@ class ProductsRestApiDependencyProvider extends AbstractBundleDependencyProvider
         return $container;
     }
 
-    /**
-     * @param \Spryker\Glue\Kernel\Container $container
-     *
-     * @return \Spryker\Glue\Kernel\Container
-     */
     protected function addStoreClient(Container $container): Container
     {
         $container->set(static::CLIENT_STORE, function (Container $container) {
@@ -103,11 +83,6 @@ class ProductsRestApiDependencyProvider extends AbstractBundleDependencyProvider
         return $container;
     }
 
-    /**
-     * @param \Spryker\Glue\Kernel\Container $container
-     *
-     * @return \Spryker\Glue\Kernel\Container
-     */
     protected function addConcreteProductsResourceExpanderPlugins(Container $container): Container
     {
         $container->set(static::PLUGINS_CONCRETE_PRODUCTS_RESOURCE_EXPANDER, function () {
@@ -117,11 +92,6 @@ class ProductsRestApiDependencyProvider extends AbstractBundleDependencyProvider
         return $container;
     }
 
-    /**
-     * @param \Spryker\Glue\Kernel\Container $container
-     *
-     * @return \Spryker\Glue\Kernel\Container
-     */
     protected function addAbstractProductsResourceExpanderPlugins(Container $container): Container
     {
         $container->set(static::PLUGINS_ABSTRACT_PRODUCTS_RESOURCE_EXPANDER, function () {

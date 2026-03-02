@@ -101,11 +101,6 @@ class ConcreteProductsReader implements ConcreteProductsReaderInterface
         $this->concreteProductsResourceExpanderPlugins = $concreteProductsResourceExpanderPlugins;
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
     public function getProductConcreteStorageData(RestRequestInterface $restRequest): RestResponseInterface
     {
         $response = $this->restResourceBuilder->createRestResponse();
@@ -145,12 +140,6 @@ class ConcreteProductsReader implements ConcreteProductsReaderInterface
         );
     }
 
-    /**
-     * @param string $sku
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface|null
-     */
     public function findProductConcreteBySku(string $sku, RestRequestInterface $restRequest): ?RestResourceInterface
     {
         $concreteProductData = $this->productStorageClient->findProductConcreteStorageDataByMapping(
@@ -166,12 +155,6 @@ class ConcreteProductsReader implements ConcreteProductsReaderInterface
         return current($this->createRestResourcesFromConcreteProductStorageData([$concreteProductData], $restRequest));
     }
 
-    /**
-     * @param int $idProductConcrete
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface|null
-     */
     public function findProductConcreteById(int $idProductConcrete, RestRequestInterface $restRequest): ?RestResourceInterface
     {
         $concreteProductData = $this->productStorageClient->findProductConcreteStorageData(
@@ -242,13 +225,6 @@ class ConcreteProductsReader implements ConcreteProductsReaderInterface
         );
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer $concreteProductsRestAttributesTransfer
-     * @param int $idProductConcrete
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer
-     */
     protected function expandRestConcreteProductsAttributesTransfer(
         ConcreteProductsRestAttributesTransfer $concreteProductsRestAttributesTransfer,
         int $idProductConcrete,
@@ -268,11 +244,6 @@ class ConcreteProductsReader implements ConcreteProductsReaderInterface
         return $concreteProductsRestAttributesTransfer;
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface $response
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
     protected function addConcreteSkuNotSpecifiedError(RestResponseInterface $response): RestResponseInterface
     {
         $restErrorTransfer = (new RestErrorMessageTransfer())
@@ -283,11 +254,6 @@ class ConcreteProductsReader implements ConcreteProductsReaderInterface
         return $response->addError($restErrorTransfer);
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface $response
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
     protected function addConcreteProductNotFoundError(RestResponseInterface $response): RestResponseInterface
     {
         $restErrorTransfer = (new RestErrorMessageTransfer())

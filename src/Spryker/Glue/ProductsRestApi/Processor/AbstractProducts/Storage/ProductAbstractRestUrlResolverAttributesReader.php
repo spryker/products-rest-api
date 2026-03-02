@@ -24,19 +24,11 @@ class ProductAbstractRestUrlResolverAttributesReader implements ProductAbstractR
      */
     protected $productStorageClient;
 
-    /**
-     * @param \Spryker\Glue\ProductsRestApi\Dependency\Client\ProductsRestApiToProductStorageClientInterface $productStorageClient
-     */
     public function __construct(ProductsRestApiToProductStorageClientInterface $productStorageClient)
     {
         $this->productStorageClient = $productStorageClient;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\UrlStorageTransfer $urlStorageTransfer
-     *
-     * @return \Generated\Shared\Transfer\RestUrlResolverAttributesTransfer|null
-     */
     public function provideRestUrlResolverAttributesTransferByUrlStorageTransfer(UrlStorageTransfer $urlStorageTransfer): ?RestUrlResolverAttributesTransfer
     {
         $localeName = $this->findLocaleName($urlStorageTransfer);
@@ -59,11 +51,6 @@ class ProductAbstractRestUrlResolverAttributesReader implements ProductAbstractR
             ->setEntityId($data[static::KEY_SKU]);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\UrlStorageTransfer $urlStorageTransfer
-     *
-     * @return string|null
-     */
     protected function findLocaleName(UrlStorageTransfer $urlStorageTransfer): ?string
     {
         if ($urlStorageTransfer->getLocaleName()) {

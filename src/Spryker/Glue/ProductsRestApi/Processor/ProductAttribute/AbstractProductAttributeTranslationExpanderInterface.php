@@ -11,12 +11,6 @@ use Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer;
 
 interface AbstractProductAttributeTranslationExpanderInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer $abstractProductsRestAttributesTransfer
-     * @param string $localeName
-     *
-     * @return \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer
-     */
     public function addProductAttributeTranslation(
         AbstractProductsRestAttributesTransfer $abstractProductsRestAttributesTransfer,
         string $localeName

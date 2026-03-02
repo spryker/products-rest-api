@@ -104,11 +104,6 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         $this->abstractProductsResourceExpanderPlugins = $abstractProductsResourceExpanderPlugins;
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
     public function getProductAbstractStorageData(RestRequestInterface $restRequest): RestResponseInterface
     {
         $response = $this->restResourceBuilder->createRestResponse();
@@ -153,12 +148,6 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         return $this->createRestResourcesFromAbstractProductStorageData($abstractProductCollection, $localeName);
     }
 
-    /**
-     * @param string $sku
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface|null
-     */
     public function findProductAbstractBySku(string $sku, RestRequestInterface $restRequest): ?RestResourceInterface
     {
         $localeName = $restRequest->getMetadata()->getLocale();
@@ -176,12 +165,6 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         return $this->createRestResourceFromAbstractProductStorageData($productAbstractData, $localeName);
     }
 
-    /**
-     * @param int $idProductAbstract
-     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface|null
-     */
     public function findProductAbstractById(int $idProductAbstract, RestRequestInterface $restRequest): ?RestResourceInterface
     {
         $localeName = $restRequest->getMetadata()->getLocale();
@@ -218,12 +201,6 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         return $this->createRestResourcesFromAbstractProductStorageDataIndexedByIdProductAbstract($abstractProductCollection, $localeName);
     }
 
-    /**
-     * @param array $productAbstractData
-     * @param string $localeName
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface
-     */
     protected function createRestResourceFromAbstractProductStorageData(array $productAbstractData, string $localeName): RestResourceInterface
     {
         $restAbstractProductsAttributesTransfer = $this->abstractProductsResourceMapper
@@ -243,13 +220,6 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         );
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer $abstractProductsRestAttributesTransfer
-     * @param int $idProductAbstract
-     * @param string $localeName
-     *
-     * @return \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer
-     */
     protected function expandRestAbstractProductsAttributesTransfer(
         AbstractProductsRestAttributesTransfer $abstractProductsRestAttributesTransfer,
         int $idProductAbstract,
@@ -331,11 +301,6 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         return $restResource;
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface $response
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
     protected function addAbstractSkuNotSpecifiedError(RestResponseInterface $response): RestResponseInterface
     {
         $restErrorTransfer = (new RestErrorMessageTransfer())
@@ -346,11 +311,6 @@ class AbstractProductsReader implements AbstractProductsReaderInterface
         return $response->addError($restErrorTransfer);
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface $response
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
     protected function addAbstractProductNotFoundError(RestResponseInterface $response): RestResponseInterface
     {
         $restErrorTransfer = (new RestErrorMessageTransfer())

@@ -11,12 +11,6 @@ use Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer;
 
 interface ConcreteProductAttributeTranslationExpanderInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer $concreteProductsRestAttributesTransfer
-     * @param string $localeName
-     *
-     * @return \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer
-     */
     public function addProductAttributeTranslation(
         ConcreteProductsRestAttributesTransfer $concreteProductsRestAttributesTransfer,
         string $localeName

@@ -22,20 +22,11 @@ class ConcreteProductAttributeTranslationExpander implements ConcreteProductAttr
      */
     protected $glossaryStorageClient;
 
-    /**
-     * @param \Spryker\Glue\ProductsRestApi\Dependency\Client\ProductsRestApiToGlossaryStorageClientInterface $glossaryStorageClient
-     */
     public function __construct(ProductsRestApiToGlossaryStorageClientInterface $glossaryStorageClient)
     {
         $this->glossaryStorageClient = $glossaryStorageClient;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer $concreteProductsRestAttributesTransfer
-     * @param string $localeName
-     *
-     * @return \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer
-     */
     public function addProductAttributeTranslation(
         ConcreteProductsRestAttributesTransfer $concreteProductsRestAttributesTransfer,
         string $localeName

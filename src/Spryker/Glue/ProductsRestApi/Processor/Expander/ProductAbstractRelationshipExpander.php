@@ -26,9 +26,6 @@ class ProductAbstractRelationshipExpander implements ProductAbstractRelationship
      */
     protected $abstractProductsReader;
 
-    /**
-     * @param \Spryker\Glue\ProductsRestApi\Processor\AbstractProducts\AbstractProductsReaderInterface $abstractProductsReader
-     */
     public function __construct(AbstractProductsReaderInterface $abstractProductsReader)
     {
         $this->abstractProductsReader = $abstractProductsReader;
@@ -115,11 +112,6 @@ class ProductAbstractRelationshipExpander implements ProductAbstractRelationship
         return $productAbstractSkuList;
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface $resource
-     *
-     * @return string|null
-     */
     protected function findProductAbstractSkuInRestResourceAttributes(RestResourceInterface $resource): ?string
     {
         $attributes = $resource->getAttributes();
@@ -145,11 +137,6 @@ class ProductAbstractRelationshipExpander implements ProductAbstractRelationship
         return array_unique(array_filter($productAbstractSkuList));
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface $resource
-     *
-     * @return string|null
-     */
     protected function findProductAbstractSkuInAttributes(RestResourceInterface $resource): ?string
     {
         $attributes = $resource->getAttributes();
@@ -160,11 +147,6 @@ class ProductAbstractRelationshipExpander implements ProductAbstractRelationship
         return null;
     }
 
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface $resource
-     *
-     * @return bool
-     */
     protected function isAbstractProductsResource(RestResourceInterface $resource): bool
     {
         return $resource->getType() === ProductsRestApiConfig::RESOURCE_ABSTRACT_PRODUCTS;

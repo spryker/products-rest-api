@@ -11,10 +11,5 @@ use Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer;
 
 interface AbstractProductsResourceMapperInterface
 {
-    /**
-     * @param array $abstractProductData
-     *
-     * @return \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer
-     */
     public function mapAbstractProductsDataToAbstractProductsRestAttributes(array $abstractProductData): AbstractProductsRestAttributesTransfer;
 }

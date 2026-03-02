@@ -31,11 +31,6 @@ class AbstractProductsResourceMapper implements AbstractProductsResourceMapperIn
      */
     protected const KEY_SUPER_ATTRIBUTES = 'super_attributes';
 
-    /**
-     * @param array $abstractProductData
-     *
-     * @return \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer
-     */
     public function mapAbstractProductsDataToAbstractProductsRestAttributes(array $abstractProductData): AbstractProductsRestAttributesTransfer
     {
         $restAbstractProductsAttributesTransfer = (new AbstractProductsRestAttributesTransfer())->fromArray($abstractProductData, true);
@@ -44,11 +39,6 @@ class AbstractProductsResourceMapper implements AbstractProductsResourceMapperIn
         return $this->changeIdsToSkus($restAbstractProductsAttributesTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer $restAbstractProductsAttributesTransfer
-     *
-     * @return \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer
-     */
     protected function changeIdsToSkus(
         AbstractProductsRestAttributesTransfer $restAbstractProductsAttributesTransfer
     ): AbstractProductsRestAttributesTransfer {
