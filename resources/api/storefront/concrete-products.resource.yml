@@ -1,0 +1,231 @@
+resource:
+    name: ConcreteProducts
+    shortName: concrete-products
+    description: 'Concrete product retrieval'
+
+    provider: Spryker\Glue\ProductsRestApi\Api\Storefront\Provider\ConcreteProductsStorefrontProvider
+
+    paginationEnabled: false
+
+    operations:
+        - type: Get
+          description: 'Retrieve a concrete product by SKU'
+
+        - type: GetCollection
+          name: getConcreteProductsFallback
+          description: 'Backward compatibility — returns 400 when SKU is missing'
+          uriTemplate: '/concrete-products'
+
+    includes:
+        - relationshipName: concrete-product-availabilities
+          targetResource: ConcreteProductAvailabilities
+          uriTemplate: /concrete-products/{concreteProductSku}/concrete-product-availabilities
+          uriVariableMappings:
+              sku: concreteProductSku
+
+        - relationshipName: concrete-product-image-sets
+          targetResource: ConcreteProductImageSets
+          uriTemplate: /concrete-products/{concreteProductSku}/concrete-product-image-sets
+          uriVariableMappings:
+              sku: concreteProductSku
+
+        - relationshipName: concrete-product-prices
+          targetResource: ConcreteProductPrices
+          uriTemplate: /concrete-products/{concreteProductSku}/concrete-product-prices
+          uriVariableMappings:
+              sku: concreteProductSku
+
+        - relationshipName: product-labels
+          targetResource: ProductLabels
+          uriTemplate: /concrete-products/{concreteProductSku}/product-labels
+          uriVariableMappings:
+              sku: concreteProductSku
+
+        - relationshipName: product-reviews
+          targetResource: ProductReviews
+          uriTemplate: /concrete-products/{concreteProductSku}/product-reviews
+          uriVariableMappings:
+              sku: concreteProductSku
+
+        - relationshipName: product-offers
+          targetResource: ConcreteProductsProductOffers
+          uriTemplate: /concrete-products/{sku}/product-offers
+          uriVariableMappings:
+              sku: sku
+
+        - relationshipName: abstract-products
+          targetResource: AbstractProducts
+          uriTemplate: /abstract-products/{sku}
+          uriVariableMappings:
+              productAbstractSku: sku
+
+        - relationshipName: product-options
+          targetResource: ProductOptions
+          uriTemplate: /abstract-products/{abstractProductSku}/product-options
+          uriVariableMappings:
+              productAbstractSku: abstractProductSku
+
+        - relationshipName: sales-units
+          targetResource: SalesUnits
+          uriTemplate: /concrete-products/{concreteProductSku}/sales-units
+          uriVariableMappings:
+              sku: concreteProductSku
+
+        - relationshipName: product-measurement-units
+          targetResource: ProductMeasurementUnits
+          resolverClass: Spryker\Glue\ProductMeasurementUnitsRestApi\Api\Storefront\Relationship\ConcreteProductsProductMeasurementUnitsRelationshipResolver
+
+        - relationshipName: bundled-products
+          targetResource: BundledProducts
+          uriTemplate: /concrete-products/{concreteProductSku}/bundled-products
+          uriVariableMappings:
+              sku: concreteProductSku
+
+    properties:
+        sku:
+            type: string
+            identifier: true
+            writable: false
+            readable: true
+            required: false
+            description: 'Concrete product SKU'
+            openapiContext:
+                example: '001_25904006'
+
+        productAbstractSku:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Abstract product SKU this concrete product belongs to'
+            openapiContext:
+                example: '001'
+
+        name:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Product name'
+            openapiContext:
+                example: 'Acer Iconia A3-A20FHD'
+
+        description:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Product description'
+            openapiContext:
+                example: 'Stay connected and entertained on the go.'
+
+        attributes:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Product attributes'
+            openapiContext:
+                example:
+                    brand: 'Acer'
+                    color: 'Black'
+
+        superAttributesDefinition:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Definition of super attributes for the product'
+            openapiContext:
+                example: ['color', 'size']
+
+        metaTitle:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Meta title for SEO'
+            openapiContext:
+                example: 'Acer Iconia A3-A20FHD'
+
+        metaKeywords:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Meta keywords for SEO'
+            openapiContext:
+                example: 'Acer,Iconia'
+
+        metaDescription:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Meta description for SEO'
+            openapiContext:
+                example: 'Acer Iconia A3-A20FHD tablet'
+
+        attributeNames:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Translated attribute names'
+            openapiContext:
+                example:
+                    brand: 'Brand'
+                    color: 'Color'
+
+        isDiscontinued:
+            type: boolean
+            writable: false
+            readable: true
+            required: false
+            description: 'Whether the concrete product has been discontinued'
+            openapiContext:
+                example: false
+
+        discontinuedNote:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Optional note explaining product discontinuation'
+            openapiContext:
+                example: 'Product discontinued by manufacturer.'
+
+        averageRating:
+            type: number
+            writable: false
+            readable: true
+            required: false
+            description: 'Average rating across product reviews'
+            openapiContext:
+                example: 4.5
+
+        reviewCount:
+            type: integer
+            writable: false
+            readable: true
+            required: false
+            description: 'Total number of product reviews'
+            openapiContext:
+                example: 12
+
+        productConfigurationInstance:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Configuration instance data when the product is configurable'
+            openapiContext:
+                example:
+                    configuratorKey: 'date-time-configurator-example'
+                    configuration:
+                        selectedDate: '2046-12-31'
+                        selectedTime: '14:00'
+                    displayData:
+                        Date: '2046-12-31'
+                        Time: '14:00'
+                    isComplete: true

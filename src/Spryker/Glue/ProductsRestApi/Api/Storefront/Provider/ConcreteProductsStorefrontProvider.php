@@ -1,0 +1,102 @@
+<?php
+
+/**
+ * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
+ * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ */
+
+declare(strict_types=1);
+
+namespace Spryker\Glue\ProductsRestApi\Api\Storefront\Provider;
+
+use Generated\Api\Storefront\ConcreteProductsStorefrontResource;
+use Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer;
+use Spryker\ApiPlatform\Exception\GlueApiException;
+use Spryker\ApiPlatform\State\Provider\AbstractStorefrontProvider;
+use Spryker\Glue\ProductsRestApi\Api\Storefront\Reader\ConcreteProductsAttributesReaderInterface;
+use Spryker\Glue\ProductsRestApi\ProductsRestApiConfig;
+use Symfony\Component\HttpFoundation\Response;
+
+class ConcreteProductsStorefrontProvider extends AbstractStorefrontProvider
+{
+    protected const string KEY_SKU = 'sku';
+
+    public function __construct(
+        protected ConcreteProductsAttributesReaderInterface $concreteProductsAttributesReader,
+    ) {
+    }
+
+    /**
+     * @throws \Spryker\ApiPlatform\Exception\GlueApiException
+     */
+    protected function provideCollection(): array
+    {
+        throw new GlueApiException(
+            Response::HTTP_BAD_REQUEST,
+            ProductsRestApiConfig::RESPONSE_CODE_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
+            ProductsRestApiConfig::RESPONSE_DETAIL_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
+        );
+    }
+
+    /**
+     * @throws \Spryker\ApiPlatform\Exception\GlueApiException
+     */
+    protected function provideItem(): ?object
+    {
+        if (!$this->hasUriVariable(static::KEY_SKU)) {
+            throw new GlueApiException(
+                Response::HTTP_BAD_REQUEST,
+                ProductsRestApiConfig::RESPONSE_CODE_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
+                ProductsRestApiConfig::RESPONSE_DETAIL_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
+            );
+        }
+
+        $sku = (string)$this->getUriVariable(static::KEY_SKU);
+
+        if ($sku === '') {
+            throw new GlueApiException(
+                Response::HTTP_BAD_REQUEST,
+                ProductsRestApiConfig::RESPONSE_CODE_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
+                ProductsRestApiConfig::RESPONSE_DETAIL_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
+            );
+        }
+
+        $transfer = $this->concreteProductsAttributesReader->findConcreteProductAttributes(
+            $sku,
+            $this->getLocale()->getLocaleNameOrFail(),
+        );
+
+        if ($transfer === null) {
+            throw new GlueApiException(
+                Response::HTTP_NOT_FOUND,
+                ProductsRestApiConfig::RESPONSE_CODE_CANT_FIND_CONCRETE_PRODUCT,
+                ProductsRestApiConfig::RESPONSE_DETAIL_CANT_FIND_CONCRETE_PRODUCT,
+            );
+        }
+
+        return $this->mapTransferToResource($transfer);
+    }
+
+    protected function mapTransferToResource(
+        ConcreteProductsRestAttributesTransfer $transfer
+    ): ConcreteProductsStorefrontResource {
+        $resource = new ConcreteProductsStorefrontResource();
+        $resource->sku = $transfer->getSku();
+        $resource->productAbstractSku = $transfer->getProductAbstractSku();
+        $resource->name = $transfer->getName();
+        $resource->description = $transfer->getDescription();
+        $resource->attributes = $transfer->getAttributes();
+        $resource->superAttributesDefinition = $transfer->getSuperAttributesDefinition();
+        $resource->metaTitle = $transfer->getMetaTitle();
+        $resource->metaKeywords = $transfer->getMetaKeywords();
+        $resource->metaDescription = $transfer->getMetaDescription();
+        $resource->attributeNames = $transfer->getAttributeNames();
+        $resource->isDiscontinued = $transfer->getIsDiscontinued();
+        $resource->discontinuedNote = $transfer->getDiscontinuedNote();
+        $resource->averageRating = $transfer->getAverageRating();
+        $resource->reviewCount = $transfer->getReviewCount() ?? 0;
+        $resource->productConfigurationInstance = $transfer->getProductConfigurationInstance()?->toArray() ?? [];
+
+        return $resource;
+    }
+}

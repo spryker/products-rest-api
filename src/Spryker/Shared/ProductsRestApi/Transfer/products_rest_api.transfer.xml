@@ -27,6 +27,13 @@
         <property name="metaKeywords" type="string" description="The meta keywords of a page for SEO purposes."/>
         <property name="metaDescription" type="string" description="The meta description of a page for SEO purposes."/>
         <property name="attributeNames" type="array" singular="attributeNames" description="A collection of attribute names."/>
+        <property name="discontinuedNote" type="string" description="Optional note explaining product discontinuation."/>
+        <property name="averageRating" type="float" description="Average rating across product reviews."/>
+        <property name="reviewCount" type="int" description="Total number of product reviews."/>
+        <property name="productConfigurationInstance" type="RestProductConfigurationInstanceAttributes" description="Configuration instance data when the product is configurable."/>
+    </transfer>
+
+    <transfer name="RestProductConfigurationInstanceAttributes">
     </transfer>
 
     <transfer name="RestErrorMessage">

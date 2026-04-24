@@ -1,0 +1,238 @@
+resource:
+    name: AbstractProducts
+    shortName: abstract-products
+    description: 'Abstract product retrieval'
+
+    provider: Spryker\Glue\ProductsRestApi\Api\Storefront\Provider\AbstractProductsStorefrontProvider
+
+    paginationEnabled: false
+
+    operations:
+        - type: Get
+          description: 'Retrieve an abstract product by SKU'
+
+        - type: GetCollection
+          name: getAbstractProductsFallback
+          description: 'Backward compatibility — returns 400 when SKU is missing'
+          uriTemplate: '/abstract-products'
+
+        - type: GetCollection
+          name: getAbstractProductsByContentProductAbstractList
+          description: 'Retrieve abstract products for a content product abstract list'
+          uriTemplate: '/content-product-abstract-lists/{id}/abstract-products'
+          provider: Spryker\Glue\ContentProductAbstractListsRestApi\Api\Storefront\Provider\ContentProductAbstractListAbstractProductsStorefrontProvider
+          uriVariables:
+              id:
+                  fromClass: ContentProductAbstractListsStorefrontResource
+
+    includes:
+        - relationshipName: abstract-product-availabilities
+          targetResource: AbstractProductAvailabilities
+          uriTemplate: /abstract-products/{abstractProductSku}/abstract-product-availabilities
+          uriVariableMappings:
+              sku: abstractProductSku
+
+        - relationshipName: abstract-product-image-sets
+          targetResource: AbstractProductImageSets
+          uriTemplate: /abstract-products/{abstractProductSku}/abstract-product-image-sets
+          uriVariableMappings:
+              sku: abstractProductSku
+
+        - relationshipName: abstract-product-prices
+          targetResource: AbstractProductPrices
+          uriTemplate: /abstract-products/{abstractProductSku}/abstract-product-prices
+          uriVariableMappings:
+              sku: abstractProductSku
+
+        - relationshipName: product-tax-sets
+          targetResource: ProductTaxSets
+          uriTemplate: /abstract-products/{abstractProductSku}/product-tax-sets
+          uriVariableMappings:
+              sku: abstractProductSku
+
+        - relationshipName: concrete-products
+          targetResource: ConcreteProducts
+          uriTemplate: /concrete-products/{sku}
+          uriVariableMappings:
+              concreteProductSkus: sku
+
+        - relationshipName: product-labels
+          targetResource: ProductLabels
+          uriTemplate: /abstract-products/{abstractProductSku}/product-labels
+          uriVariableMappings:
+              sku: abstractProductSku
+
+        - relationshipName: product-options
+          targetResource: ProductOptions
+          uriTemplate: /abstract-products/{abstractProductSku}/product-options
+          uriVariableMappings:
+              sku: abstractProductSku
+
+        - relationshipName: product-reviews
+          targetResource: ProductReviews
+          uriTemplate: /abstract-products/{abstractProductSku}/product-reviews
+          uriVariableMappings:
+              sku: abstractProductSku
+
+        - relationshipName: category-nodes
+          targetResource: CategoryNodes
+          resolverClass: Spryker\Glue\ProductsCategoriesResourceRelationship\Api\Storefront\Relationship\AbstractProductCategoryNodesRelationshipResolver
+
+    properties:
+        sku:
+            type: string
+            identifier: true
+            writable: false
+            readable: true
+            required: false
+            description: 'Abstract product SKU'
+            openapiContext:
+                example: '001'
+
+        name:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Product name'
+            openapiContext:
+                example: 'Acer Iconia A3-A20FHD'
+
+        description:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Product description'
+            openapiContext:
+                example: 'Stay connected and entertained on the go.'
+
+        attributes:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Product attributes'
+            openapiContext:
+                example:
+                    brand: 'Acer'
+                    color: 'Black'
+
+        superAttributes:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Super attributes for product variants'
+            openapiContext:
+                example:
+                    color: ['Black', 'Silver']
+
+        superAttributesDefinition:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Definition of super attributes for the product'
+            openapiContext:
+                example: ['color', 'size']
+
+        attributeMap:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Attribute map for variant resolution'
+            openapiContext:
+                example:
+                    product_concrete_ids:
+                        - '001_25904006'
+                        - '001_25904007'
+                    super_attributes:
+                        color: ['black', 'silver']
+                    attribute_variants:
+                        color:black:
+                            id_product_concrete: '001_25904006'
+                        color:silver:
+                            id_product_concrete: '001_25904007'
+
+        concreteProductSkus:
+            type: array
+            writable: false
+            readable: false
+            required: false
+            description: 'List of concrete product SKUs (derived from attributeMap) used for relationship fan-out'
+
+        metaTitle:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Meta title for SEO'
+            openapiContext:
+                example: 'Acer Iconia A3-A20FHD'
+
+        metaKeywords:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Meta keywords for SEO'
+            openapiContext:
+                example: 'Acer,Iconia'
+
+        metaDescription:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Meta description for SEO'
+            openapiContext:
+                example: 'Acer Iconia A3-A20FHD tablet'
+
+        attributeNames:
+            type: array
+            writable: false
+            readable: true
+            required: false
+            description: 'Translated attribute names'
+            openapiContext:
+                example:
+                    brand: 'Brand'
+                    color: 'Color'
+
+        url:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Product page URL'
+            openapiContext:
+                example: '/en/acer-iconia-a3-a20fhd-1'
+
+        merchantReference:
+            type: string
+            writable: false
+            readable: true
+            required: false
+            description: 'Owning merchant reference (populated when a merchant owns this product)'
+            openapiContext:
+                example: 'MER000001'
+
+        averageRating:
+            type: number
+            writable: false
+            readable: true
+            required: false
+            description: 'Average rating across product reviews'
+            openapiContext:
+                example: 4.5
+
+        reviewCount:
+            type: integer
+            writable: false
+            readable: true
+            required: false
+            description: 'Total number of product reviews'
+            openapiContext:
+                example: 12
