@@ -44,7 +44,7 @@
 
     <transfer name="UrlStorage">
         <property name="fkResourceProductAbstract" type="int"/>
-        <property name="localeName" type="string" description="The name of a locale, such as &quot;en_US&quot; or &quot;de_DE&quot;."/>
+        <property name="localeName" type="string" description="The name of a locale, such as 'en_US' or 'de_DE'."/>
         <property name="localeUrls" type="UrlStorage[]" singular="urlStorage" description="A collection of URLs, keyed by locale."/>
         <property name="fkLocale" type="int"/>
     </transfer>
