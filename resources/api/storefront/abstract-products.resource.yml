@@ -9,11 +9,12 @@ resource:
 
     operations:
         - type: Get
+          name: getAbstractProduct
           description: 'Retrieve an abstract product by SKU'
 
         - type: GetCollection
-          name: getAbstractProductsFallback
-          description: 'Backward compatibility — returns 400 when SKU is missing'
+          name: getAbstractProductsWithoutSku
+          description: 'Returns 400 when called without the abstract product SKU.'
           uriTemplate: '/abstract-products'
 
         - type: GetCollection
@@ -58,9 +59,9 @@ resource:
 
         - relationshipName: product-labels
           targetResource: ProductLabels
-          uriTemplate: /abstract-products/{abstractProductSku}/product-labels
+          uriTemplate: /abstract-products/{sku}/product-labels
           uriVariableMappings:
-              sku: abstractProductSku
+              sku: sku
 
         - relationshipName: product-options
           targetResource: ProductOptions

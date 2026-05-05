@@ -9,11 +9,12 @@ resource:
 
     operations:
         - type: Get
+          name: getConcreteProduct
           description: 'Retrieve a concrete product by SKU'
 
         - type: GetCollection
-          name: getConcreteProductsFallback
-          description: 'Backward compatibility — returns 400 when SKU is missing'
+          name: getConcreteProductsWithoutSku
+          description: 'Returns 400 when called without the concrete product SKU.'
           uriTemplate: '/concrete-products'
 
     includes:
@@ -37,9 +38,9 @@ resource:
 
         - relationshipName: product-labels
           targetResource: ProductLabels
-          uriTemplate: /concrete-products/{concreteProductSku}/product-labels
+          uriTemplate: /abstract-products/{sku}/product-labels
           uriVariableMappings:
-              sku: concreteProductSku
+              productAbstractSku: sku
 
         - relationshipName: product-reviews
           targetResource: ProductReviews
