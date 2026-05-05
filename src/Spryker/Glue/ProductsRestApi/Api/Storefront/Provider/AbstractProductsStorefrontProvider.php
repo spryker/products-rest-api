@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Spryker\Glue\ProductsRestApi\Api\Storefront\Provider;
 
 use Generated\Api\Storefront\AbstractProductsStorefrontResource;
-use Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer;
 use Spryker\ApiPlatform\Exception\GlueApiException;
 use Spryker\ApiPlatform\State\Provider\AbstractStorefrontProvider;
+use Spryker\Glue\ProductsRestApi\Api\Storefront\Mapper\AbstractProductsResourceMapperInterface;
 use Spryker\Glue\ProductsRestApi\Api\Storefront\Reader\AbstractProductsAttributesReaderInterface;
 use Spryker\Glue\ProductsRestApi\ProductsRestApiConfig;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +23,7 @@ class AbstractProductsStorefrontProvider extends AbstractStorefrontProvider
 
     public function __construct(
         protected AbstractProductsAttributesReaderInterface $abstractProductsAttributesReader,
+        protected AbstractProductsResourceMapperInterface $abstractProductsResourceMapper,
     ) {
     }
 
@@ -74,30 +75,8 @@ class AbstractProductsStorefrontProvider extends AbstractStorefrontProvider
             );
         }
 
-        return $this->mapTransferToResource($transfer);
-    }
-
-    protected function mapTransferToResource(
-        AbstractProductsRestAttributesTransfer $transfer
-    ): AbstractProductsStorefrontResource {
-        $resource = new AbstractProductsStorefrontResource();
-        $resource->sku = $transfer->getSku();
-        $resource->name = $transfer->getName();
-        $resource->description = $transfer->getDescription();
-        $resource->attributes = $transfer->getAttributes();
-        $resource->superAttributes = $transfer->getSuperAttributes();
-        $resource->superAttributesDefinition = $transfer->getSuperAttributesDefinition();
-        $resource->attributeMap = $transfer->getAttributeMap();
-        $resource->concreteProductSkus = array_values($resource->attributeMap['product_concrete_ids'] ?? []);
-        $resource->metaTitle = $transfer->getMetaTitle();
-        $resource->metaKeywords = $transfer->getMetaKeywords();
-        $resource->metaDescription = $transfer->getMetaDescription();
-        $resource->attributeNames = $transfer->getAttributeNames();
-        $resource->url = $transfer->getUrl();
-        $resource->merchantReference = $transfer->getMerchantReference();
-        $resource->averageRating = $transfer->getAverageRating();
-        $resource->reviewCount = $transfer->getReviewCount() ?? 0;
-
-        return $resource;
+        return AbstractProductsStorefrontResource::fromArray(
+            $this->abstractProductsResourceMapper->mapAbstractProductsAttributesTransferToResourceData($transfer),
+        );
     }
 }

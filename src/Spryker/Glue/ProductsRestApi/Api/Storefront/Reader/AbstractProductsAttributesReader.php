@@ -18,9 +18,9 @@ class AbstractProductsAttributesReader implements AbstractProductsAttributesRead
 {
     protected const string MAPPING_TYPE_SKU = 'sku';
 
-    protected const string KEY_ID_PRODUCT_ABSTRACT = 'id_product_abstract';
+    protected const string KEY_SKU = 'sku';
 
-    protected const string KEY_ATTRIBUTE_MAP = 'attribute_map';
+    protected const string KEY_ID_PRODUCT_ABSTRACT = 'id_product_abstract';
 
     protected const string KEY_SUPER_ATTRIBUTES = 'super_attributes';
 
@@ -58,7 +58,91 @@ class AbstractProductsAttributesReader implements AbstractProductsAttributesRead
         $transfer = $this->mapStorageDataToTransfer($productAbstractData);
         $transfer = $this->expandWithPlugins($transfer, $productAbstractData, $localeName);
 
-        return $this->addAttributeTranslations($transfer, $localeName);
+        $transfers = $this->addAttributeTranslations([$sku => $transfer], $localeName);
+
+        return $transfers[$sku];
+    }
+
+    /**
+     * @param array<string> $skus
+     *
+     * @return array<string, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer>
+     */
+    public function findBulkAbstractProductAttributes(array $skus, string $localeName): array
+    {
+        $bulkProductData = $this->productStorageClient->findBulkProductAbstractStorageDataByMapping(
+            static::MAPPING_TYPE_SKU,
+            $skus,
+            $localeName,
+        );
+
+        if ($bulkProductData === []) {
+            return [];
+        }
+
+        $transfers = [];
+
+        foreach ($bulkProductData as $productAbstractData) {
+            $sku = $productAbstractData[static::KEY_SKU] ?? null;
+
+            if (!is_string($sku) || $sku === '') {
+                continue;
+            }
+
+            $transfer = $this->mapStorageDataToTransfer($productAbstractData);
+            $transfer = $this->expandWithPlugins($transfer, $productAbstractData, $localeName);
+            $transfers[$sku] = $transfer;
+        }
+
+        return $this->addAttributeTranslations($transfers, $localeName);
+    }
+
+    /**
+     * @param array<string, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer> $abstractProductsRestAttributesTransfers
+     *
+     * @return array<string, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer>
+     */
+    protected function addAttributeTranslations(array $abstractProductsRestAttributesTransfers, string $localeName): array
+    {
+        $attributeKeysIndexedByGlossaryKey = [];
+        $attributeKeysIndexedBySku = [];
+
+        foreach ($abstractProductsRestAttributesTransfers as $sku => $abstractProductsRestAttributesTransfer) {
+            $attributeKeys = array_keys(array_merge($abstractProductsRestAttributesTransfer->getAttributes(), $abstractProductsRestAttributesTransfer->getSuperAttributes()));
+            $attributeKeysIndexedBySku[$sku] = $attributeKeys;
+
+            foreach ($attributeKeys as $key) {
+                $glossaryKey = strtolower(static::GLOSSARY_PRODUCT_ATTRIBUTE_NAME_KEY_PREFIX . $key);
+                $attributeKeysIndexedByGlossaryKey[$glossaryKey] = $key;
+            }
+        }
+
+        if ($attributeKeysIndexedByGlossaryKey === []) {
+            return $abstractProductsRestAttributesTransfers;
+        }
+
+        $translations = $this->glossaryStorageClient->translateBulk(
+            array_keys($attributeKeysIndexedByGlossaryKey),
+            $localeName,
+        );
+
+        $attributeTranslations = [];
+
+        foreach ($attributeKeysIndexedByGlossaryKey as $glossaryKey => $attributeKey) {
+            $attributeTranslations[$attributeKey] = $translations[$glossaryKey] ?? $attributeKey;
+        }
+
+        foreach ($abstractProductsRestAttributesTransfers as $sku => $abstractProductsRestAttributesTransfer) {
+            $attributeNamesIndexedByKey = [];
+
+            foreach ($attributeKeysIndexedBySku[$sku] as $key) {
+                $attributeNamesIndexedByKey[$key] = $attributeTranslations[$key] ?? $key;
+            }
+
+            $abstractProductsRestAttributesTransfers[$sku] = $abstractProductsRestAttributesTransfer->setAttributeNames($attributeNamesIndexedByKey);
+        }
+
+        return $abstractProductsRestAttributesTransfers;
     }
 
     /**
@@ -132,28 +216,5 @@ class AbstractProductsAttributesReader implements AbstractProductsAttributesRead
         }
 
         return $transfer;
-    }
-
-    protected function addAttributeTranslations(
-        AbstractProductsRestAttributesTransfer $transfer,
-        string $localeName
-    ): AbstractProductsRestAttributesTransfer {
-        $attributeNames = [];
-
-        foreach ($transfer->getAttributes() as $key => $value) {
-            $attributeNames[$key] = $this->glossaryStorageClient->translate(
-                static::GLOSSARY_PRODUCT_ATTRIBUTE_NAME_KEY_PREFIX . $key,
-                $localeName,
-            );
-        }
-
-        foreach ($transfer->getSuperAttributes() as $key => $value) {
-            $attributeNames[$key] = $this->glossaryStorageClient->translate(
-                static::GLOSSARY_PRODUCT_ATTRIBUTE_NAME_KEY_PREFIX . $key,
-                $localeName,
-            );
-        }
-
-        return $transfer->setAttributeNames($attributeNames);
     }
 }

@@ -14,4 +14,11 @@ use Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer;
 interface AbstractProductsAttributesReaderInterface
 {
     public function findAbstractProductAttributes(string $sku, string $localeName): ?AbstractProductsRestAttributesTransfer;
+
+    /**
+     * @param array<string> $skus
+     *
+     * @return array<string, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer>
+     */
+    public function findBulkAbstractProductAttributes(array $skus, string $localeName): array;
 }
