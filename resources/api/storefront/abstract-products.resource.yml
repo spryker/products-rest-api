@@ -79,6 +79,12 @@ resource:
           targetResource: CategoryNodes
           resolverClass: Spryker\Glue\ProductsCategoriesResourceRelationship\Api\Storefront\Relationship\AbstractProductCategoryNodesRelationshipResolver
 
+        - relationshipName: merchants
+          targetResource: Merchants
+          uriTemplate: /merchants/{merchantReference}
+          uriVariableMappings:
+              merchantReference: merchantReference
+
     properties:
         sku:
             type: string
