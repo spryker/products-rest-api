@@ -13,6 +13,7 @@ use Generated\Api\Storefront\AbstractProductsStorefrontResource;
 use Spryker\ApiPlatform\Relationship\AbstractRelationshipResolver;
 use Spryker\Glue\ProductsRestApi\Api\Storefront\Mapper\AbstractProductsResourceMapperInterface;
 use Spryker\Glue\ProductsRestApi\Api\Storefront\Reader\AbstractProductsAttributesReaderInterface;
+use Spryker\Service\Serializer\SerializerServiceInterface;
 
 class AbstractProductsRelationshipResolver extends AbstractRelationshipResolver
 {
@@ -23,6 +24,7 @@ class AbstractProductsRelationshipResolver extends AbstractRelationshipResolver
     public function __construct(
         protected AbstractProductsAttributesReaderInterface $abstractProductsAttributesReader,
         protected AbstractProductsResourceMapperInterface $abstractProductsResourceMapper,
+        protected SerializerServiceInterface $serializer,
     ) {
     }
 
@@ -46,8 +48,9 @@ class AbstractProductsRelationshipResolver extends AbstractRelationshipResolver
         $resources = [];
 
         foreach ($transfersBySkus as $transfer) {
-            $resources[] = AbstractProductsStorefrontResource::fromArray(
+            $resources[] = $this->serializer->denormalize(
                 $this->abstractProductsResourceMapper->mapAbstractProductsAttributesTransferToResourceData($transfer),
+                AbstractProductsStorefrontResource::class,
             );
         }
 

@@ -43,6 +43,44 @@ class ConcreteProductsAttributesReader implements ConcreteProductsAttributesRead
     ) {
     }
 
+    /**
+     * @param array<int> $concreteProductIds
+     *
+     * @return array<int, \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer>
+     */
+    public function findBulkConcreteProductAttributesByIds(array $concreteProductIds, string $localeName): array
+    {
+        $bulkProductData = $this->productStorageClient->getBulkProductConcreteStorageData($concreteProductIds, $localeName);
+
+        if ($bulkProductData === []) {
+            return [];
+        }
+
+        $indexedProductData = [];
+
+        foreach ($bulkProductData as $productData) {
+            $idProductConcrete = $productData[static::KEY_ID_PRODUCT_CONCRETE] ?? null;
+
+            if ($idProductConcrete === null) {
+                continue;
+            }
+
+            $indexedProductData[(int)$idProductConcrete] = $productData;
+        }
+
+        $transfers = [];
+
+        foreach ($concreteProductIds as $concreteProductId) {
+            if (!isset($indexedProductData[$concreteProductId])) {
+                continue;
+            }
+
+            $transfers[$concreteProductId] = $this->mapStorageDataToTransfer($indexedProductData[$concreteProductId], $localeName);
+        }
+
+        return $this->addBulkAttributeTranslations($transfers, $localeName);
+    }
+
     public function findConcreteProductAttributes(string $sku, string $localeName): ?ConcreteProductsRestAttributesTransfer
     {
         $productConcreteData = $this->productStorageClient->findProductConcreteStorageDataByMapping(
@@ -55,11 +93,18 @@ class ConcreteProductsAttributesReader implements ConcreteProductsAttributesRead
             return null;
         }
 
+        return $this->addAttributeTranslations($this->mapStorageDataToTransfer($productConcreteData, $localeName), $localeName);
+    }
+
+    /**
+     * @param array<string, mixed> $productConcreteData
+     */
+    protected function mapStorageDataToTransfer(array $productConcreteData, string $localeName): ConcreteProductsRestAttributesTransfer
+    {
         $transfer = (new ConcreteProductsRestAttributesTransfer())->fromArray($productConcreteData, true);
         $transfer = $this->enrichProductAbstractSku($transfer, $productConcreteData, $localeName);
-        $transfer = $this->expandWithPlugins($transfer, $productConcreteData, $localeName);
 
-        return $this->addAttributeTranslations($transfer, $localeName);
+        return $this->expandWithPlugins($transfer, $productConcreteData, $localeName);
     }
 
     /**
@@ -146,6 +191,42 @@ class ConcreteProductsAttributesReader implements ConcreteProductsAttributesRead
         }
 
         return $transfer->setProductAbstractSku($abstractData[static::KEY_SKU] ?? null);
+    }
+
+    /**
+     * @param array<int, \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer> $transfers
+     *
+     * @return array<int, \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer>
+     */
+    protected function addBulkAttributeTranslations(array $transfers, string $localeName): array
+    {
+        $glossaryKeyToAttributeKey = [];
+
+        foreach ($transfers as $transfer) {
+            foreach (array_keys($transfer->getAttributes()) as $attributeKey) {
+                $glossaryKey = static::GLOSSARY_PRODUCT_ATTRIBUTE_NAME_KEY_PREFIX . $attributeKey;
+                $glossaryKeyToAttributeKey[$glossaryKey] = $attributeKey;
+            }
+        }
+
+        if ($glossaryKeyToAttributeKey === []) {
+            return $transfers;
+        }
+
+        $translations = $this->glossaryStorageClient->translateBulk(array_keys($glossaryKeyToAttributeKey), $localeName);
+
+        foreach ($transfers as $id => $transfer) {
+            $attributeNames = [];
+
+            foreach (array_keys($transfer->getAttributes()) as $attributeKey) {
+                $glossaryKey = static::GLOSSARY_PRODUCT_ATTRIBUTE_NAME_KEY_PREFIX . $attributeKey;
+                $attributeNames[$attributeKey] = $translations[$glossaryKey] ?? $attributeKey;
+            }
+
+            $transfers[$id] = $transfer->setAttributeNames($attributeNames);
+        }
+
+        return $transfers;
     }
 
     protected function addAttributeTranslations(

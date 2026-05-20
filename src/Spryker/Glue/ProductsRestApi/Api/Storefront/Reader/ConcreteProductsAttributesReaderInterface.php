@@ -14,4 +14,11 @@ use Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer;
 interface ConcreteProductsAttributesReaderInterface
 {
     public function findConcreteProductAttributes(string $sku, string $localeName): ?ConcreteProductsRestAttributesTransfer;
+
+    /**
+     * @param array<int> $concreteProductIds
+     *
+     * @return array<int, \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer>
+     */
+    public function findBulkConcreteProductAttributesByIds(array $concreteProductIds, string $localeName): array;
 }

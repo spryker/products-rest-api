@@ -15,28 +15,71 @@ use Spryker\ApiPlatform\State\Provider\AbstractStorefrontProvider;
 use Spryker\Glue\ProductsRestApi\Api\Storefront\Mapper\AbstractProductsResourceMapperInterface;
 use Spryker\Glue\ProductsRestApi\Api\Storefront\Reader\AbstractProductsAttributesReaderInterface;
 use Spryker\Glue\ProductsRestApi\ProductsRestApiConfig;
+use Spryker\Service\Serializer\SerializerServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class AbstractProductsStorefrontProvider extends AbstractStorefrontProvider
 {
+    public const string CONTEXT_KEY_ABSTRACT_PRODUCT_IDS = 'abstractProductIds';
+
     protected const string KEY_SKU = 'sku';
 
     public function __construct(
         protected AbstractProductsAttributesReaderInterface $abstractProductsAttributesReader,
         protected AbstractProductsResourceMapperInterface $abstractProductsResourceMapper,
+        protected SerializerServiceInterface $serializer,
     ) {
     }
 
     /**
      * @throws \Spryker\ApiPlatform\Exception\GlueApiException
+     *
+     * @return array<\Generated\Api\Storefront\AbstractProductsStorefrontResource>
      */
     protected function provideCollection(): array
     {
+        $abstractProductIds = $this->context[static::CONTEXT_KEY_ABSTRACT_PRODUCT_IDS] ?? null;
+
+        if (is_array($abstractProductIds) && $abstractProductIds !== []) {
+            return $this->buildResourcesByAbstractProductIds($abstractProductIds);
+        }
+
         throw new GlueApiException(
             Response::HTTP_BAD_REQUEST,
             ProductsRestApiConfig::RESPONSE_CODE_ABSTRACT_PRODUCT_SKU_IS_NOT_SPECIFIED,
             ProductsRestApiConfig::RESPONSE_DETAIL_ABSTRACT_PRODUCT_SKU_IS_NOT_SPECIFIED,
         );
+    }
+
+    /**
+     * @param array<int> $abstractProductIds
+     *
+     * @return array<\Generated\Api\Storefront\AbstractProductsStorefrontResource>
+     */
+    protected function buildResourcesByAbstractProductIds(array $abstractProductIds): array
+    {
+        $locale = $this->getLocale()->getLocaleNameOrFail();
+
+        $transfers = $this->abstractProductsAttributesReader->findBulkAbstractProductAttributesByIds(
+            $abstractProductIds,
+            $locale,
+            $this->getStore()->getNameOrFail(),
+        );
+
+        $resources = [];
+
+        foreach ($abstractProductIds as $abstractProductId) {
+            if (!isset($transfers[$abstractProductId])) {
+                continue;
+            }
+
+            $resources[] = $this->serializer->denormalize(
+                $this->abstractProductsResourceMapper->mapAbstractProductsAttributesTransferToResourceData($transfers[$abstractProductId]),
+                AbstractProductsStorefrontResource::class,
+            );
+        }
+
+        return $resources;
     }
 
     /**
@@ -75,8 +118,9 @@ class AbstractProductsStorefrontProvider extends AbstractStorefrontProvider
             );
         }
 
-        return AbstractProductsStorefrontResource::fromArray(
+        return $this->serializer->denormalize(
             $this->abstractProductsResourceMapper->mapAbstractProductsAttributesTransferToResourceData($transfer),
+            AbstractProductsStorefrontResource::class,
         );
     }
 }

@@ -10,32 +10,70 @@ declare(strict_types=1);
 namespace Spryker\Glue\ProductsRestApi\Api\Storefront\Provider;
 
 use Generated\Api\Storefront\ConcreteProductsStorefrontResource;
-use Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer;
 use Spryker\ApiPlatform\Exception\GlueApiException;
 use Spryker\ApiPlatform\State\Provider\AbstractStorefrontProvider;
+use Spryker\Glue\ProductsRestApi\Api\Storefront\Mapper\ConcreteProductsResourceMapperInterface;
 use Spryker\Glue\ProductsRestApi\Api\Storefront\Reader\ConcreteProductsAttributesReaderInterface;
 use Spryker\Glue\ProductsRestApi\ProductsRestApiConfig;
+use Spryker\Service\Serializer\SerializerServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConcreteProductsStorefrontProvider extends AbstractStorefrontProvider
 {
+    public const string CONTEXT_KEY_CONCRETE_PRODUCT_IDS = 'concreteProductIds';
+
     protected const string KEY_SKU = 'sku';
 
     public function __construct(
         protected ConcreteProductsAttributesReaderInterface $concreteProductsAttributesReader,
+        protected ConcreteProductsResourceMapperInterface $concreteProductsResourceMapper,
+        protected SerializerServiceInterface $serializer,
     ) {
     }
 
     /**
      * @throws \Spryker\ApiPlatform\Exception\GlueApiException
+     *
+     * @return array<\Generated\Api\Storefront\ConcreteProductsStorefrontResource>
      */
     protected function provideCollection(): array
     {
+        $concreteProductIds = $this->context[static::CONTEXT_KEY_CONCRETE_PRODUCT_IDS] ?? null;
+
+        if (is_array($concreteProductIds) && $concreteProductIds !== []) {
+            return $this->buildResourcesByConcreteProductIds($concreteProductIds);
+        }
+
         throw new GlueApiException(
             Response::HTTP_BAD_REQUEST,
             ProductsRestApiConfig::RESPONSE_CODE_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
             ProductsRestApiConfig::RESPONSE_DETAIL_CONCRETE_PRODUCT_SKU_IS_NOT_SPECIFIED,
         );
+    }
+
+    /**
+     * @param array<int> $concreteProductIds
+     *
+     * @return array<\Generated\Api\Storefront\ConcreteProductsStorefrontResource>
+     */
+    protected function buildResourcesByConcreteProductIds(array $concreteProductIds): array
+    {
+        $transfers = $this->concreteProductsAttributesReader->findBulkConcreteProductAttributesByIds(
+            $concreteProductIds,
+            $this->getLocale()->getLocaleNameOrFail(),
+        );
+
+        $resources = [];
+
+        foreach ($concreteProductIds as $concreteProductId) {
+            if (!isset($transfers[$concreteProductId])) {
+                continue;
+            }
+
+            $resources[] = $this->denormalizeToResource($transfers[$concreteProductId]);
+        }
+
+        return $resources;
     }
 
     /**
@@ -74,29 +112,14 @@ class ConcreteProductsStorefrontProvider extends AbstractStorefrontProvider
             );
         }
 
-        return $this->mapTransferToResource($transfer);
+        return $this->denormalizeToResource($transfer);
     }
 
-    protected function mapTransferToResource(
-        ConcreteProductsRestAttributesTransfer $transfer
-    ): ConcreteProductsStorefrontResource {
-        $resource = new ConcreteProductsStorefrontResource();
-        $resource->sku = $transfer->getSku();
-        $resource->productAbstractSku = $transfer->getProductAbstractSku();
-        $resource->name = $transfer->getName();
-        $resource->description = $transfer->getDescription();
-        $resource->attributes = $transfer->getAttributes();
-        $resource->superAttributesDefinition = $transfer->getSuperAttributesDefinition();
-        $resource->metaTitle = $transfer->getMetaTitle();
-        $resource->metaKeywords = $transfer->getMetaKeywords();
-        $resource->metaDescription = $transfer->getMetaDescription();
-        $resource->attributeNames = $transfer->getAttributeNames();
-        $resource->isDiscontinued = $transfer->getIsDiscontinued();
-        $resource->discontinuedNote = $transfer->getDiscontinuedNote();
-        $resource->averageRating = $transfer->getAverageRating();
-        $resource->reviewCount = $transfer->getReviewCount() ?? 0;
-        $resource->productConfigurationInstance = $transfer->getProductConfigurationInstance()?->toArray() ?? [];
-
-        return $resource;
+    protected function denormalizeToResource(mixed $transfer): ConcreteProductsStorefrontResource
+    {
+        return $this->serializer->denormalize(
+            $this->concreteProductsResourceMapper->mapConcreteProductsRestAttributesTransferToResourceData($transfer),
+            ConcreteProductsStorefrontResource::class,
+        );
     }
 }

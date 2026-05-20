@@ -55,10 +55,7 @@ class AbstractProductsAttributesReader implements AbstractProductsAttributesRead
             return null;
         }
 
-        $transfer = $this->mapStorageDataToTransfer($productAbstractData);
-        $transfer = $this->expandWithPlugins($transfer, $productAbstractData, $localeName);
-
-        $transfers = $this->addAttributeTranslations([$sku => $transfer], $localeName);
+        $transfers = $this->addAttributeTranslations([$sku => $this->mapAndExpandStorageData($productAbstractData, $localeName)], $localeName);
 
         return $transfers[$sku];
     }
@@ -89,12 +86,40 @@ class AbstractProductsAttributesReader implements AbstractProductsAttributesRead
                 continue;
             }
 
-            $transfer = $this->mapStorageDataToTransfer($productAbstractData);
-            $transfer = $this->expandWithPlugins($transfer, $productAbstractData, $localeName);
-            $transfers[$sku] = $transfer;
+            $transfers[$sku] = $this->mapAndExpandStorageData($productAbstractData, $localeName);
         }
 
         return $this->addAttributeTranslations($transfers, $localeName);
+    }
+
+    /**
+     * @param array<int> $abstractProductIds
+     *
+     * @return array<int, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer>
+     */
+    public function findBulkAbstractProductAttributesByIds(array $abstractProductIds, string $localeName, string $storeName): array
+    {
+        $bulkProductData = $this->productStorageClient
+            ->getBulkProductAbstractStorageDataByProductAbstractIdsForLocaleNameAndStore(
+                $abstractProductIds,
+                $localeName,
+                $storeName,
+            );
+
+        if ($bulkProductData === []) {
+            return [];
+        }
+
+        $transfers = [];
+
+        foreach ($bulkProductData as $abstractProductId => $productAbstractData) {
+            $transfers[$abstractProductId] = $this->mapAndExpandStorageData($productAbstractData, $localeName);
+        }
+
+        /** @var array<int, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer> $result */
+        $result = $this->addAttributeTranslations($transfers, $localeName);
+
+        return $result;
     }
 
     /**
@@ -143,6 +168,16 @@ class AbstractProductsAttributesReader implements AbstractProductsAttributesRead
         }
 
         return $abstractProductsRestAttributesTransfers;
+    }
+
+    /**
+     * @param array<string, mixed> $productAbstractData
+     */
+    protected function mapAndExpandStorageData(array $productAbstractData, string $localeName): AbstractProductsRestAttributesTransfer
+    {
+        $transfer = $this->mapStorageDataToTransfer($productAbstractData);
+
+        return $this->expandWithPlugins($transfer, $productAbstractData, $localeName);
     }
 
     /**

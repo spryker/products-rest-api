@@ -21,4 +21,11 @@ interface AbstractProductsAttributesReaderInterface
      * @return array<string, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer>
      */
     public function findBulkAbstractProductAttributes(array $skus, string $localeName): array;
+
+    /**
+     * @param array<int> $abstractProductIds
+     *
+     * @return array<int, \Generated\Shared\Transfer\AbstractProductsRestAttributesTransfer>
+     */
+    public function findBulkAbstractProductAttributesByIds(array $abstractProductIds, string $localeName, string $storeName): array;
 }
