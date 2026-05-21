@@ -21,7 +21,7 @@ class ConcreteProductsResourceMapper implements ConcreteProductsResourceMapperIn
     ): array {
         $data = $concreteProductsRestAttributesTransfer->toArray(false, true);
         $data['reviewCount'] = $concreteProductsRestAttributesTransfer->getReviewCount() ?? 0;
-        $data['productConfigurationInstance'] = $concreteProductsRestAttributesTransfer->getProductConfigurationInstance()?->toArray() ?? [];
+        $data['productConfigurationInstance'] = $concreteProductsRestAttributesTransfer->getProductConfigurationInstance()?->toArray(true, true) ?? [];
 
         return $data;
     }

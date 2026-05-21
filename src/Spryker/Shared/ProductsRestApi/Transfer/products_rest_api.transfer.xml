@@ -84,4 +84,8 @@
     <transfer name="RestQuoteRequestItem">
         <property name="sku" type="string" description="The Stock Keeping Unit, a unique identifier for a concrete product."/>
     </transfer>
+
+    <transfer name="Locale">
+        <property name="localeName" type="string" description="The name of a locale, such as 'en_US' or 'de_DE'."/>
+    </transfer>
 </transfers>
