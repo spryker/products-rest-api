@@ -81,6 +81,39 @@ class ConcreteProductsAttributesReader implements ConcreteProductsAttributesRead
         return $this->addBulkAttributeTranslations($transfers, $localeName);
     }
 
+    /**
+     * @param array<string> $skus
+     *
+     * @return array<string, \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer>
+     */
+    public function getBulkConcreteProductAttributesBySkus(array $skus, string $localeName): array
+    {
+        if ($skus === []) {
+            return [];
+        }
+
+        $bulkProductData = $this->productStorageClient->getBulkProductConcreteStorageDataByMapping(
+            static::MAPPING_TYPE_SKU,
+            $skus,
+            $localeName,
+        );
+
+        $concreteProductsRestAttributesTransfersIndexedBySku = [];
+
+        foreach ($bulkProductData as $productData) {
+            $sku = $productData[static::KEY_SKU] ?? null;
+
+            if ($sku === null) {
+                continue;
+            }
+
+            $transfer = $this->mapStorageDataToTransfer($productData, $localeName);
+            $concreteProductsRestAttributesTransfersIndexedBySku[(string)$sku] = $this->addAttributeTranslations($transfer, $localeName);
+        }
+
+        return $concreteProductsRestAttributesTransfersIndexedBySku;
+    }
+
     public function findConcreteProductAttributes(string $sku, string $localeName): ?ConcreteProductsRestAttributesTransfer
     {
         $productConcreteData = $this->productStorageClient->findProductConcreteStorageDataByMapping(

@@ -21,4 +21,11 @@ interface ConcreteProductsAttributesReaderInterface
      * @return array<int, \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer>
      */
     public function findBulkConcreteProductAttributesByIds(array $concreteProductIds, string $localeName): array;
+
+    /**
+     * @param array<string> $skus
+     *
+     * @return array<string, \Generated\Shared\Transfer\ConcreteProductsRestAttributesTransfer>
+     */
+    public function getBulkConcreteProductAttributesBySkus(array $skus, string $localeName): array;
 }
