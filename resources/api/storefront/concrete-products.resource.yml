@@ -11,11 +11,21 @@ resource:
         - type: Get
           name: getConcreteProduct
           description: 'Retrieve a concrete product by SKU'
+          openapiContext:
+              responses:
+                  200:
+                      description: 'Concrete product returned.'
+                  404:
+                      description: 'No concrete product exists for the given SKU.'
 
         - type: GetCollection
           name: getConcreteProductsWithoutSku
           description: 'Returns 400 when called without the concrete product SKU.'
           uriTemplate: '/concrete-products'
+          openapiContext:
+              responses:
+                  400:
+                      description: 'Concrete product SKU is missing from the request.'
 
     includes:
         - relationshipName: concrete-product-availabilities

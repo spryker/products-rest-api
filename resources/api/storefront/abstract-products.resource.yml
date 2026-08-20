@@ -11,11 +11,21 @@ resource:
         - type: Get
           name: getAbstractProduct
           description: 'Retrieve an abstract product by SKU'
+          openapiContext:
+              responses:
+                  200:
+                      description: 'Abstract product returned.'
+                  404:
+                      description: 'No abstract product exists for the given SKU.'
 
         - type: GetCollection
           name: getAbstractProductsWithoutSku
           description: 'Returns 400 when called without the abstract product SKU.'
           uriTemplate: '/abstract-products'
+          openapiContext:
+              responses:
+                  400:
+                      description: 'Abstract product SKU is missing from the request.'
 
         - type: GetCollection
           name: getAbstractProductsByContentProductAbstractList
@@ -25,6 +35,12 @@ resource:
           uriVariables:
               id:
                   fromClass: ContentProductAbstractListsStorefrontResource
+          openapiContext:
+              responses:
+                  200:
+                      description: 'Abstract products of the content list returned.'
+                  404:
+                      description: 'No content product abstract list exists for the given content key.'
 
     includes:
         - relationshipName: abstract-product-availabilities
