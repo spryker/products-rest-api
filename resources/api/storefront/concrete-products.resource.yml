@@ -22,6 +22,7 @@ resource:
           name: getConcreteProductsWithoutSku
           description: 'Returns 400 when called without the concrete product SKU.'
           uriTemplate: '/concrete-products'
+          openapi: false
           openapiContext:
               responses:
                   400:

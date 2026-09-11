@@ -22,6 +22,7 @@ resource:
           name: getAbstractProductsWithoutSku
           description: 'Returns 400 when called without the abstract product SKU.'
           uriTemplate: '/abstract-products'
+          openapi: false
           openapiContext:
               responses:
                   400:
