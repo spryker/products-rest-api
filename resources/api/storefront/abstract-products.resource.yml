@@ -11,6 +11,9 @@ resource:
         - type: Get
           name: getAbstractProduct
           description: 'Retrieve an abstract product by SKU'
+          extraProperties:
+              notFoundCode: '301'
+              notFoundMessage: 'Abstract product is not found.'
           openapiContext:
               responses:
                   200:
@@ -36,6 +39,9 @@ resource:
           uriVariables:
               id:
                   fromClass: ContentProductAbstractListsStorefrontResource
+          extraProperties:
+              notFoundCode: '2201'
+              notFoundMessage: 'Content item not found.'
           openapiContext:
               responses:
                   200:

@@ -11,6 +11,9 @@ resource:
         - type: Get
           name: getConcreteProduct
           description: 'Retrieve a concrete product by SKU'
+          extraProperties:
+              notFoundCode: '302'
+              notFoundMessage: 'Concrete product is not found.'
           openapiContext:
               responses:
                   200:
