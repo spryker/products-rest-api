@@ -245,7 +245,8 @@ resource:
             writable: false
             readable: true
             required: false
-            description: 'Owning merchant reference (populated when a merchant owns this product)'
+            responseOptional: true
+            description: 'Reference of the merchant selling the abstract product. Answered only for a product sold through a marketplace merchant; one the shop sells itself carries none.'
             openapiContext:
                 example: 'MER000001'
 
@@ -254,7 +255,8 @@ resource:
             writable: false
             readable: true
             required: false
-            description: 'Average rating across product reviews'
+            responseOptional: true
+            description: "Average rating over the abstract product's approved reviews. An AVG over no rows, so a product nobody has reviewed carries none while the sibling `reviewCount` still answers 0."
             openapiContext:
                 example: 4.5
 

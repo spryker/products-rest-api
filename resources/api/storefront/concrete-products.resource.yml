@@ -215,7 +215,8 @@ resource:
             writable: false
             readable: true
             required: false
-            description: 'Average rating across product reviews'
+            responseOptional: true
+            description: "Average rating over the abstract product's approved reviews. An AVG over no rows, so a product nobody has reviewed carries none while the sibling `reviewCount` still answers 0."
             openapiContext:
                 example: 4.5
 
