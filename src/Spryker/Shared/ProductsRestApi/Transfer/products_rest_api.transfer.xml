@@ -14,6 +14,7 @@
         <property name="metaDescription" type="string" description="The meta description of a page for SEO purposes."/>
         <property name="attributeNames" type="array" singular="attributeNames" description="A collection of attribute names."/>
         <property name="url" type="string" description="A URL for a resource."/>
+        <property name="reviewCount" type="int" description="The number of reviews for a product."/>
     </transfer>
 
     <transfer name="ConcreteProductsRestAttributes">
